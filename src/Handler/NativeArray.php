@@ -4,9 +4,12 @@ namespace Phalcon\I18n\Handler;
 
 use Phalcon\I18n\Interfaces\HandlerInterface;
 use Phalcon\Translate\Adapter\NativeArray as PhalconNativeArray;
+use Phalcon\Translate\InterpolatorFactory;
 
 class NativeArray extends PhalconNativeArray implements HandlerInterface
 {
+    protected $_translate;
+
     /** @var int */
     protected $_shiftLevel;
 
@@ -26,7 +29,8 @@ class NativeArray extends PhalconNativeArray implements HandlerInterface
      */
     public function __construct(array $options)
     {
-        parent::__construct($options);
+        parent::__construct(new InterpolatorFactory(), $options);
+        $this->_translate = $options["content"];
         $this->_shiftKeys = [];
         if (isset($options['flatten'])) {
             $flatOption = $options['flatten'];

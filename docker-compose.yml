@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+
+    i18n:
+        build:
+            context: .docker
+            dockerfile: Dockerfile
+        container_name: i18n
+        env_file:
+            - ./.docker/.php.env
+        volumes:
+            - .:/var/www:cached
+            - ~/composer:/root/.composer
+        tty: true

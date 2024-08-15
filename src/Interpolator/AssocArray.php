@@ -7,11 +7,8 @@ use Phalcon\Translate\Interpolator\InterpolatorInterface;
 
 class AssocArray implements InterpolatorInterface, PlaceholderInterface
 {
-    /** @var string */
-    protected $_bracketLeft;
-
-    /** @var string */
-    protected $_bracketRight;
+    protected string $_bracketLeft;
+    protected string $_bracketRight;
 
     public function __construct(?string $left = null, ?string $right = null)
     {
@@ -19,15 +16,16 @@ class AssocArray implements InterpolatorInterface, PlaceholderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Replaces placeholders by the values passed
+     * @param string $translation
+     * @param array<string, string|array> $placeholders
+     * @return string
      */
-    public function replacePlaceholders($translation, $placeholders = null): string
+    public function replacePlaceholders(string $translation, array $placeholders = []): string
     {
-        if (is_array($placeholders)) {
-            foreach ($placeholders as $key => $replace) {
-                $search = $this->_bracketLeft . $key . $this->_bracketRight;
-                $translation = str_replace($search, $replace, $translation);
-            }
+        foreach ($placeholders as $key => $replace) {
+            $search = $this->_bracketLeft . $key . $this->_bracketRight;
+            $translation = str_replace($search, $replace, $translation);
         }
         return $translation;
     }

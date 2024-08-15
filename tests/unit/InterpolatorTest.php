@@ -1,14 +1,13 @@
 <?php
 
-namespace Phalcon\Tests\Unit;
+namespace Tests\Unit;
 
 use Codeception\Test\Unit;
 use Phalcon\I18n\Interpolator\AssocArray;
 
 class InterpolatorTest extends Unit
 {
-    /** @var AssocArray */
-    protected $interpolator;
+    protected AssocArray $interpolator;
 
     protected function _before()
     {

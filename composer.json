@@ -4,18 +4,17 @@
     "license": "MIT",
     "keywords": ["phalcon", "i18n", "translate"],
     "type": "library",
-    "version": "1.0",
     "require": {
-        "php": ">=7.1",
+        "php": "^8.0|^8.1|^8.2|^8.3",
         "ext-json": "*",
-        "ext-phalcon": ">=4.0 <5.0"
+        "ext-phalcon": "^5.0"
     },
     "require-dev": {
-        "codeception/codeception": "^4.1",
-        "codeception/module-asserts": "^1.3",
-        "codeception/module-phalcon": "^1.1",
-        "phalcon/ide-stubs": "^v4.1.0",
-        "phpstan/phpstan": "^0.12"
+        "codeception/codeception": "^5.0",
+        "codeception/module-asserts": "^3.0",
+        "codeception/module-phalcon5": "^2.0",
+        "phalcon/ide-stubs": "v5.8.0",
+        "phpstan/phpstan": "^1.8"
     },
     "authors": [
         {
@@ -24,8 +23,7 @@
         }
     ],
     "suggest": {
-        "ext-pdo": "*",
-        "ext-yaml": "*"
+        "ext-yaml": "Needed to support YAML format as an adapter class"
     },
     "autoload": {
         "psr-4": {
@@ -34,7 +32,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Phalcon\\Tests\\Unit\\": "tests/unit/"
+            "Tests\\Unit\\": "tests/unit/"
         }
     }
 }

@@ -1,8 +1,94 @@
 # Multi-lingual Support
 
 [![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://choosealicense.com/licenses/mit/)
+[![CircleCI](https://circleci.com/gh/someson/phalcon-i18n/tree/5.0.svg?style=shield)](https://circleci.com/gh/someson/phalcon-i18n/tree/circleci-project-setup)
+[![codecov](https://codecov.io/gh/someson/phalcon-i18n/branch/5.0/graph/badge.svg?token=AW5T4WU56Q)](https://codecov.io/gh/someson/phalcon-i18n)
+![Packagist Version (including pre-releases)](https://img.shields.io/packagist/v/someson/phalcon-i18n)
+[![Made in Ukraine](https://img.shields.io/badge/made_in-ukraine-ffd700.svg?labelColor=0057b7)](https://supportukrainenow.org/)
+[![Russian Warship Go Fuck Yourself](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/RussianWarship.svg)](https://stand-with-ukraine.pp.ua)
 
-Extending [Phalcon Framework v.3.x Translations Module](https://docs.phalcon.io/3.4/en/translate)
+Extending [Phalcon Framework v5 Translations Module](https://docs.phalcon.io/5.0/en/translate)
+
+## Install
+
+```bash
+$ composer require someson/phalcon-i18n
+```
+
+## Example
+
+e.g. `login.json` File:
+```json
+{
+    "form": {
+        "label": {
+            "identity": "Benutzername",
+            "password": "Passwort",
+            "rememberMe": "Ich möchte angemeldet bleiben"
+        },
+        "placeholder": {
+            "identity": "Bitte geben Sie ihren Benutzernamen ein",
+            "password": "Bitte geben Sie ihr Passwort ein"
+        },
+        "button": "Anmelden"
+    },
+    "title": {
+        "h1": "Main Title",
+        "h2": "some subtitle"
+    }
+}
+```
+translating path like `login:form.label.identity` returns `Benutzername`
+
+which start with `login:` means file name and the rest of it is a pure json path.
+
+## Usage
+
+### 1. Simple usage
+```php
+// component using a singleton pattern, so we can instantiate it before the framework itself
+// or wrap it into some global function
+$t = \Phalcon\I18n\Translator::instance();
+
+// using the "de" directory, "en" by default
+$t->setLang('de');
+
+// equal to "global:a", hence "global" is a default scope
+echo $t->_('a');
+
+// placeholder "key" replaced through "value"
+echo $t->_('b', ['key' => 'value']);
+
+// nested key
+echo $t->_('c.d.e', ['key' => 'value']);
+
+// nested key from the "api" scope (filename === scope, if files used)
+echo $t->_('api:c.d.e', ['key' => 'value']);
+```
+
+### 2. Advanced usage
+in any bootstrap file (i.e. `index.php`) define:
+```php
+use \Phalcon\I18n\Translator;
+
+if (! function_exists('__')) {
+    function __(string $key, array $params = [], bool $pluralize = true): string {
+        return $key ? Translator::instance()->_($key, $params, $pluralize) : '[TRANSLATION ERROR]';
+    }
+}
+```
+
+inside your code:
+```php
+$translation = __('a.b.c');
+```
+or in any view:
+```html
+<h1><?= __('a.b.c') ?></h1>
+```
+```twig
+<h1>{{ __('a.b.c') }}</h1>
+```
 
 ## Configure
 
@@ -69,120 +155,25 @@ return [
 ];
 ```
 
-## Usage/Examples
-
-### 1. Simple usage
-```php
-// component using a singleton pattern, so we can instantiate it before the framework itself
-// or wrap it into some global function
-$t = \Phalcon\I18n\Translator::instance();
-
-// using the "de" directory, "en" by default
-$t->setLang('de');
-
-// equal to "global:a", hence "global" is a default scope
-echo $t->_('a');
-
-// placeholder "key" replaced through "value"
-echo $t->_('b', ['key' => 'value']);
-
-// nested key
-echo $t->_('c.d.e', ['key' => 'value']);
-
-// nested key from the "api" scope (filename === scope, if files used)
-echo $t->_('api:c.d.e', ['key' => 'value']);
-```
-
-### 2. Advanced usage
-in any bootstrap file (i.e. `index.php`) define:
-```php
-use \Phalcon\I18n\Translator;
-
-if (! function_exists('__')) {
-    function __(string $key, array $params = [], bool $pluralize = true): string {
-        return $key ? Translator::instance()->_($key, $params, $pluralize) : '[TRANSLATION ERROR]';
-    }
-}
-```
-
-inside your code:
-```php
-$translation = __('a.b.c');
-```
-or in any view:
-```html
-<h1><?= __('a.b.c') ?></h1>
-```
-```twig
-<h1>{{ __('a.b.c') }}</h1>
-```
-
 ## Running Tests
 
 [Codeception](https://codeception.com/) used
 
+```
+$ docker-compose exec i18n ./vendor/bin/codecept build
+```
+
 To run tests, run the following command:
-
 ```
-$ [winpty] docker-compose exec [fpm] ./vendor/bin/codecept run [unit] [-v[v[v]]] 
-```
-```
-$ ./vendor/bin/codecept run --coverage
-Codeception PHP Testing Framework v4.1.20
-Powered by PHPUnit 8.5.15 by Sebastian Bergmann and contributors.
-
-Unit Tests (27) ----------------------------------------------------------
-+ AdapterTest: Json found and initialized (0.01s)
-+ AdapterTest: Json may throw exceptions (0.02s)
-+ ConfigTest: Must be functionable with config service (0.01s)
-+ ConfigTest: Must be functionable without config service (0.01s)
-+ ConfigTest: Must be functionable with wrong config (0.01s)
-+ DecoratorTest: No decoration (0.01s)
-+ DecoratorTest: Decorate as text pattern (0.01s)
-+ DecoratorTest: Decorate as html (0.01s)
-+ HandlerTest: Check keys shifting | #0 (0.01s)
-+ HandlerTest: Check keys shifting | #1 (0.01s)
-+ HandlerTest: Check keys shifting | #2 (0.01s)
-+ InterpolatorTest: Should handle default placeholders (0.01s)
-+ InterpolatorTest: Should handle custom placeholders (0.01s)
-+ LoaderTest: Files loader | #0 (0.01s)
-+ LoaderTest: Files loader | #1 (0.01s)
-+ LoaderTest: Files loader | #2 (0.01s)
-+ TranslatorTest: Default instance (0.01s)
-+ TranslatorTest: Change language (0.01s)
-+ TranslatorTest: Change scope (0.01s)
-+ TranslatorTest: Changed scope should return a new collection (0.01s)
-+ TranslatorTest: Check if translation exists (0.01s)
-+ TranslatorTest: Plural (0.01s)
-+ TranslatorTest: Context (0.01s)
-+ TranslatorTest: Missing translations (0.01s)
-+ TranslatorTest: Simple translation without parameters (0.01s)
-+ TranslatorTest: Simple translation with parameters (0.01s)
-+ TranslatorTest: Translation with deeper level (0.01s)
---------------------------------------------------------------------------
-
-
-Time: 651 ms, Memory: 14.00 MB
-
-OK (27 tests, 49 assertions)
-
-
-Code Coverage Report Summary:
-  Classes: 100.00% (8/8)
-  Methods: 100.00% (29/29)
-  Lines:   100.00% (140/140)                                              
+$ docker-compose exec i18n ./vendor/bin/codecept run [-vv]
 ```
 
 For code coverage info run
 ```
-$ ./vendor/bin/codecept run --coverage --coverage-html
+$ docker-compose exec i18n ./vendor/bin/codecept run --coverage --coverage-html
 ```
 and open `tests/_output/coverage/index.html` in your browser
 
+### Static analyzer
 
-## Static analyzer
-
-`$ ./vendor/bin/phpstan analyse src --level max`
-
-## TODOs
-- caching (APCu, memcache, Redis etc.)
+`$ docker-compose exec i18n ./vendor/bin/phpstan analyse src --level max`

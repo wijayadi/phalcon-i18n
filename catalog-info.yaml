@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: phalcon-i18n
+  description: Phalcon multi-lingual support (extended)
+spec:
+  type: library
+  lifecycle: production
+  owner: wijayadi
+  system: crm
